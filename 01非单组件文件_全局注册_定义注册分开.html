@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>非单组件文件_全局注册_定义和注册分开</title>
+  </head>
+  <body>
+    <!-- 
+      1.定义组件
+        const DemoCom = Vue.extend({options})
+
+      2.注册组件
+        2.1 全局注册
+        Vue.component('DemoCom',DemoCom)
+
+        2.2 局部注册
+        new Vue({
+          el:'xx',
+          components:{
+            DemoCom
+          }
+        })
+
+      3.组件使用
+        <DemoCom></DemoCom>
+        或者
+        <DemoCom />
+     -->
+
+    <div id="app">
+      <!-- 第三步.组件使用 -->
+      <button-counter></button-counter>
+      <button-counter></button-counter>
+      <button-counter></button-counter>
+
+      <!-- <hr /> -->
+
+      <blog-post v-for="post in posts" :key="post.id" :title="post.title" />
+    </div>
+
+    <!-- 引入vue.js,用于解析vue模板语法 -->
+    <script src="./lib/vue.js"></script>
+
+    <script>
+      // 第一步.定义组件1（名称为button-coutner)
+      const ButtonCounter = Vue.extend("button-counter", {
+        data() {
+          // 组件的data配置项，必须是return对象的函数
+          return {
+            count: 0,
+          };
+        },
+
+        // 【template配置项】
+        template: '<button @click="count++">你点击了{{count}}次</button>',
+      });
+
+      // 第一步.定义组件2（名称为blog-post)
+      const BlogPost = Vue.extend("blog-post", {
+        // props配置项
+        props: ["title"],
+        // template配置项
+        template: "<h3>{{title}}<button-counter /></h3>",
+      });
+
+      // 第二步.全局注册组件
+      Vue.component("button-counter", ButtonCounter);
+      Vue.component("blog-post", BlogPost);
+
+      // 创建vue实例
+      new Vue({
+        el: "#app",
+        data: {
+          posts: [
+            { id: 1, title: "我的 Vue 旅程222" },
+            { id: 2, title: "用 Vue 写博客222" },
+            { id: 3, title: "Vue 如此有趣222" },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
